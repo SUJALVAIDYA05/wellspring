@@ -1,0 +1,73 @@
+.card {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--motion-standard) var(--ease-subtle),
+              box-shadow var(--motion-standard) var(--ease-subtle),
+              border-color var(--motion-standard) var(--ease-subtle);
+}
+
+.card:hover {
+  transform: var(--lift-hover);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-teal);
+}
+
+.card:focus-within {
+  border-color: var(--color-teal);
+  outline: 2px solid var(--color-teal);
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-teal-soft);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
+}
+
+.summary {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.link {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--color-teal-dark);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--motion-fast) var(--ease-subtle);
+}
+
+.link:hover {
+  color: var(--color-teal);
+  text-decoration: underline;
+}

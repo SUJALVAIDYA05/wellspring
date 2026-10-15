@@ -1,0 +1,209 @@
+.wrapper {
+  padding: 4rem 0 6rem;
+}
+
+.alertHeader {
+  background-color: var(--color-emergency-bg);
+  border: 2px solid var(--color-emergency);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.warningPill {
+  display: inline-block;
+  background-color: var(--color-emergency);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1rem;
+}
+
+.mainTitle {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 900;
+  color: var(--color-emergency);
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.leadWarning {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.leadWarning strong {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--color-emergency);
+}
+
+/* Contact Card */
+.contactCard {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 2rem;
+}
+
+.sirenIcon {
+  font-size: 2.5rem;
+}
+
+.cardHeading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.cardSub {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.detailList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.telLink {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--color-emergency);
+  text-decoration: underline;
+  display: inline-block;
+}
+
+.subNote {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.valText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Directions */
+.directionsCard {
+  background-color: var(--color-canvas-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.directionsHeading {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.directionsBody {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.adviceList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adviceList li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.adviceList li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-teal);
+  font-size: 1.5rem;
+  line-height: 1;
+  top: -2px;
+}
+
+/* Routine Care Notice */
+.routineNotice {
+  padding: 2rem;
+  border-left: 4px solid var(--color-teal);
+  background-color: var(--color-teal-soft);
+  border-radius: var(--radius-xs);
+}
+
+.routineNotice h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.routineNotice p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.25rem;
+}
+
+.actionRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .detailRow {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .alertHeader,
+  .contactCard,
+  .directionsCard {
+    padding: 1.75rem 1.25rem;
+  }
+}

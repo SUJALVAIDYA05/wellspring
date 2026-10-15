@@ -1,0 +1,170 @@
+.heroSection {
+  background-color: var(--color-canvas);
+  position: relative;
+  overflow: hidden;
+  padding-top: 3.5rem;
+  padding-bottom: 4rem;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 3.5rem;
+}
+
+.contentCol {
+  z-index: 2;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+  margin-bottom: 1rem;
+}
+
+.headline {
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+.tealWord {
+  color: var(--color-teal);
+  display: block;
+}
+
+.darkWord {
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.supportingText {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 34rem;
+  margin-bottom: 2.5rem;
+}
+
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* Image Column with Teal Oval Backdrop matching Page 1 */
+.imageCol {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 460px;
+}
+
+.tealCircleBackdrop {
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background-color: var(--color-teal);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.doctorImageWrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  height: 460px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.doctorImage {
+  width: auto;
+  height: 100%;
+  max-height: 460px;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+/* Page 1 Bottom Teal Contact Strip */
+.contactStrip {
+  background-color: var(--color-teal);
+  color: #ffffff;
+  padding: 1.5rem 2rem;
+  margin-top: 2.5rem;
+  border-radius: 28px 28px var(--radius-sm) var(--radius-sm);
+}
+
+.contactStripInner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.contactItem a {
+  color: #ffffff;
+}
+
+.contactItem a:hover {
+  text-decoration: underline;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 960px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .imageCol {
+    order: -1;
+    margin-top: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .tealCircleBackdrop {
+    width: 320px;
+    height: 320px;
+  }
+
+  .doctorImageWrapper {
+    width: 280px;
+    height: 360px;
+  }
+
+  .contactStripInner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1.5rem;
+  }
+}

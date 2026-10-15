@@ -1,0 +1,111 @@
+.aboutWrapper {
+  padding: 4rem 0 6rem;
+}
+
+.heroRow {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 3.5rem;
+  margin-bottom: 5.5rem;
+}
+
+.introParagraph {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.imageSide {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.tealAccentBacking {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 70%;
+  height: 80%;
+  background-color: var(--color-teal);
+  border-radius: var(--radius-md);
+  z-index: 1;
+}
+
+.imageFrame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 380px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.heroImg {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Pillars */
+.pillarsSection {
+  margin-bottom: 5rem;
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+/* Facility Section */
+.facilitySection {
+  background-color: var(--color-canvas-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.cardBody {
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.noteBox {
+  padding: 1rem;
+  background-color: var(--color-canvas);
+  border-left: 3px solid var(--color-teal);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-xs);
+}
+
+@media (max-width: 960px) {
+  .heroRow {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .pillarsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

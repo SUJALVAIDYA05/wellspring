@@ -1,0 +1,131 @@
+.wrapper {
+  padding: 3rem 0 6rem;
+}
+
+.breadcrumbs {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  color: var(--color-teal);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: underline;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3.5rem;
+  margin-top: 3.5rem;
+  align-items: flex-start;
+}
+
+.sectionBlock {
+  margin-bottom: 3rem;
+}
+
+.subHeading {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-teal-soft);
+}
+
+.bodyText {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.serviceList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.serviceItem {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 1.05rem;
+  color: var(--color-text-primary);
+}
+
+.check {
+  color: var(--color-teal);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.doctorList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doctorCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: var(--color-canvas-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.docName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.docTitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.sidebar {
+  position: sticky;
+  top: 100px;
+}
+
+.ctaBox {
+  background-color: var(--color-teal-soft);
+  border: 1.5px solid var(--color-teal);
+  border-radius: var(--radius-md);
+  padding: 2.25rem 2rem;
+}
+
+.ctaBox h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.ctaBox p {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.bookBtn {
+  width: 100%;
+}
+
+.notFoundWrapper {
+  padding: 6rem 0;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}

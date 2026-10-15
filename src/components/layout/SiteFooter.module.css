@@ -1,0 +1,168 @@
+.footer {
+  margin-top: auto;
+  background-color: #121820;
+  color: #ffffff;
+}
+
+/* Teal Contact Strip matching Page 1 & 10 of PDF */
+.contactStrip {
+  background-color: var(--color-teal);
+  color: #ffffff;
+  padding: 1.25rem 0;
+}
+
+.contactStripInner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity var(--motion-fast) var(--ease-subtle);
+}
+
+.contactItem:hover {
+  opacity: 0.85;
+}
+
+.contactItem:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+.contactIcon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* Main Footer */
+.mainFooter {
+  padding: 3.5rem 0 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.colBrand {
+  max-width: 24rem;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.brandLogo {
+  width: 36px;
+  height: 36px;
+}
+
+.brandName {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.brandDesc {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.colTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.linkList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footerLink {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-subtle);
+}
+
+.footerLink:hover {
+  color: var(--color-teal-light);
+}
+
+.footerLink:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.emergencyCallout {
+  background-color: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #fca5a5;
+}
+
+.emergencyCallout strong {
+  color: #ffffff;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.emergencyCallout a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Bottom Bar */
+.bottomBar {
+  border-top: 1px solid #1f2937;
+  padding-top: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+@media (max-width: 840px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .contactStripInner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

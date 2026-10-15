@@ -1,0 +1,117 @@
+.section {
+  padding: 5.5rem 0;
+  background-color: var(--color-canvas);
+  position: relative;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.wideBannerWrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 3.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Horizontal teal framing bar matching Page 4 */
+.tealBannerTab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: 10px;
+  background-color: var(--color-teal);
+}
+
+/* Three Aligned Panels matching Page 4 */
+.panelsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.panelItem {
+  background-color: var(--color-teal);
+  color: #ffffff;
+  padding: 2.25rem 2rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform var(--motion-standard) var(--ease-subtle),
+              box-shadow var(--motion-standard) var(--ease-subtle);
+}
+
+.panelItem:hover {
+  transform: var(--lift-hover);
+  box-shadow: 0 14px 28px rgba(78, 168, 158, 0.25);
+}
+
+.panelTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.85rem;
+  line-height: 1.25;
+}
+
+.panelBody {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.94);
+  flex-grow: 1;
+}
+
+.iconTag {
+  margin-top: 1.75rem;
+  align-self: center;
+  width: 48px;
+  height: 48px;
+  background-color: #ffffff;
+  color: var(--color-teal);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.panelLink {
+  margin-top: 1.25rem;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  display: inline-block;
+}
+
+.panelLink:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .panelsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .wideBannerWrapper {
+    height: 180px;
+  }
+}

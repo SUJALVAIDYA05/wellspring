@@ -1,0 +1,59 @@
+.panel {
+  background-color: var(--color-teal);
+  color: var(--color-teal-contrast);
+  padding: 2.25rem 2rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform var(--motion-standard) var(--ease-subtle),
+              box-shadow var(--motion-standard) var(--ease-subtle);
+}
+
+.panel:hover {
+  transform: var(--lift-hover);
+  box-shadow: 0 12px 24px rgba(78, 168, 158, 0.22);
+}
+
+.badgeNumber {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #37867d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.85rem;
+  color: #ffffff;
+}
+
+.body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  flex-grow: 1;
+}
+
+.bottomIconTag {
+  align-self: center;
+  margin-top: 1.75rem;
+  width: 52px;
+  height: 52px;
+  background-color: #ffffff;
+  color: var(--color-teal);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}

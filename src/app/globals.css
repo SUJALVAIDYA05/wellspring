@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Design System Tokens & Base Styles
+   Sourced from:
+   - Teal White and Black Modern Hospital Promotion Medical Presentation.pdf
+   - frontend.md (Visual fidelity, teal/white/black palette, typography)
+   - annimations.md (Restrained motion tokens, reduced motion support)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap');
+
+:root {
+  /* Color Palette — Teal, White, Slate, Black (exact PDF values) */
+  --color-canvas: #ffffff;
+  --color-canvas-alt: #f8fafb;
+  --color-canvas-tint: #f0f9f8;
+  
+  --color-teal: #67c0b3;           /* Exact primary teal from PDF */
+  --color-teal-dark: #2f796f;      /* High contrast teal for body & text */
+  --color-teal-light: #8cd8ce;
+  --color-teal-soft: #eaf5f4;
+  --color-teal-contrast: #ffffff;
+  
+  --color-slate: #2d3f4e;          /* Exact dark slate from PDF logo & vector art */
+  --color-black: #000000;
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-subtle: #edf1f3;
+
+  /* Clinical & Emergency Accents */
+  --color-emergency: #dc2626;
+  --color-emergency-bg: #fef2f2;
+  --color-emergency-border: #fecaca;
+  --color-success: #15803d;
+  --color-success-bg: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-bg: #fef3c7;
+
+  /* Typography matching PDF */
+  --font-family-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-display: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-brand: "Bricolage Grotesque", "Poppins", sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4.5rem;
+  --spacing-4xl: 6rem;
+
+  /* Motion Tokens (annimations.md) */
+  --motion-fast: 150ms;
+  --motion-standard: 220ms;
+  --motion-reveal: 450ms;
+  --ease-subtle: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --lift-hover: translateY(-3px);
+
+  /* Radius (Editorial/Geometric) */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Max Widths */
+  --container-max-width: 1200px;
+}
+
+/* Reset and Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family-sans);
+  background-color: var(--color-canvas);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Layout Container */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Screen Reader Only (Accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Accessible Focus States */
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
+}
+
+/* Reduced Motion Baseline (annimations.md) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
