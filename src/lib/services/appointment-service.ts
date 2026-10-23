@@ -390,11 +390,12 @@ export async function createAppointment(
     if (
       error &&
       typeof error === "object" &&
-      (("code" in error && error.code === "23P01") ||
+      (("code" in error && (error.code === "23P01" || error.code === "P2034")) ||
         ("message" in error &&
           typeof error.message === "string" &&
           (error.message.includes("no_overlapping_blocking_appointments") ||
-            error.message.includes("could not serialize access"))))
+            error.message.includes("could not serialize access") ||
+            error.message.includes("write conflict"))))
     ) {
       throw new SlotConflictError();
     }

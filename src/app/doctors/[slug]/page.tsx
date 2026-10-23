@@ -6,9 +6,25 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/common/Button";
 import { HOSPITAL_CONTENT } from "@/content/hospital-content";
+import { prisma } from "@/lib/db";
 import styles from "./doctor-profile.module.css";
 
-export function generateStaticParams() {
+export const instant = false;
+
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+export async function generateStaticParams() {
+  try {
+    const doctors = await prisma.doctor.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+    });
+    if (doctors.length > 0) {
+      return doctors.map((doc) => ({ slug: doc.slug }));
+    }
+  } catch {
+    // fallback
+  }
   return HOSPITAL_CONTENT.doctors.map((doc) => ({
     slug: doc.slug,
   }));
@@ -20,16 +36,31 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const doc = HOSPITAL_CONTENT.doctors.find((d) => d.slug === slug);
-  if (!doc) {
+  try {
+    const doc = await prisma.doctor.findFirst({
+      where: { slug, isActive: true },
+      include: { department: true },
+    });
+    if (doc) {
+      return {
+        title: doc.fullName,
+        description: `${doc.specialty} — ${doc.department?.name || "General Medicine"}`,
+      };
+    }
+  } catch {
+    // fallback
+  }
+
+  const fallbackDoc = HOSPITAL_CONTENT.doctors.find((d) => d.slug === slug);
+  if (!fallbackDoc) {
     return {
       title: "Doctor Not Found",
       description: "This doctor profile may be unavailable or the link may be incorrect.",
     };
   }
   return {
-    title: doc.fullName,
-    description: `${doc.specialty} — ${doc.departmentName}`,
+    title: fallbackDoc.fullName,
+    description: `${fallbackDoc.specialty} — ${fallbackDoc.departmentName}`,
   };
 }
 
@@ -39,8 +70,69 @@ export default async function DoctorProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const doc = HOSPITAL_CONTENT.doctors.find((d) => d.slug === slug);
 
+  let doc: {
+    id: string;
+    slug: string;
+    fullName: string;
+    specialty: string;
+    departmentName: string;
+    qualifications: string;
+    biography: string;
+    photoUrl: string;
+    schedules: {
+      dayOfWeek: number;
+      startTime: string;
+      endTime: string;
+      slotDurationMinutes: number;
+    }[];
+  } | null = null;
+
+  try {
+    const dbDoc = await prisma.doctor.findFirst({
+      where: { slug },
+      include: {
+        department: true,
+        schedules: { where: { isActive: true }, orderBy: { dayOfWeek: "asc" } },
+      },
+    });
+
+    // Explicitly handle inactive or missing doctors safely
+    if (dbDoc && dbDoc.isActive) {
+      doc = {
+        id: dbDoc.id,
+        slug: dbDoc.slug,
+        fullName: dbDoc.fullName,
+        specialty: dbDoc.specialty,
+        departmentName: dbDoc.department?.name || "General Medicine",
+        qualifications: Array.isArray(dbDoc.qualifications)
+          ? dbDoc.qualifications.join(", ")
+          : dbDoc.qualifications,
+        biography:
+          dbDoc.biography ||
+          "Clinical healthcare practitioner committed to exceptional patient care and diagnostic rigor.",
+        photoUrl: dbDoc.photoUrl || "/images/hero-doctor.jpg",
+        schedules: dbDoc.schedules,
+      };
+    }
+  } catch {
+    const fallback = HOSPITAL_CONTENT.doctors.find((d) => d.slug === slug);
+    if (fallback) {
+      doc = {
+        id: fallback.id,
+        slug: fallback.slug,
+        fullName: fallback.fullName,
+        specialty: fallback.specialty,
+        departmentName: fallback.departmentName,
+        qualifications: fallback.qualifications,
+        biography: fallback.biography,
+        photoUrl: fallback.photoUrl,
+        schedules: [],
+      };
+    }
+  }
+
+  // Handle unavailable or inactive doctors safely with 404 state
   if (!doc) {
     return (
       <PageContainer size="narrow">
@@ -48,9 +140,9 @@ export default async function DoctorProfilePage({
           <SectionHeading
             eyebrow="404"
             tealPart="Doctor"
-            darkPart="Not Found"
+            darkPart="Unavailable"
             order="teal-first"
-            subtitle="This doctor profile may be unavailable or the link may be incorrect."
+            subtitle="This physician profile is not currently available or the link may be incorrect."
           />
           <div style={{ marginTop: "2rem" }}>
             <Button href="/doctors" variant="primary">
@@ -118,24 +210,51 @@ export default async function DoctorProfilePage({
               <p className={styles.bodyText}>{doc.biography}</p>
             </section>
 
-            {/* Schedule Section as required by content.md Section 8 */}
+            {/* Schedule Section */}
             <section className={styles.sectionBlock}>
               <h2 className={styles.sectionHeading}>Available Appointment Times</h2>
-              <div className={styles.scheduleEmptyState}>
-                <div className={styles.calendarIcon} aria-hidden="true">📅</div>
-                <div>
-                  <p className={styles.emptyNotice}>
-                    No appointment times are currently available in this period. Please try another date or contact the hospital.
+
+              {doc.schedules.length > 0 ? (
+                <div className={styles.scheduleList}>
+                  <p className={styles.scheduleIntro}>
+                    Regular Clinic Hours (synchronized with live booking availability):
                   </p>
-                  <small className={styles.complianceNote}>
-                    Note: Appointment availability is synchronized directly with the hospital&apos;s clinical scheduling system.
+                  <ul className={styles.scheduleDays}>
+                    {doc.schedules.map((s, idx) => (
+                      <li key={idx} className={styles.scheduleRow}>
+                        <span className={styles.scheduleDay}>{DAYS[s.dayOfWeek]}</span>
+                        <span className={styles.scheduleTime}>
+                          {s.startTime} – {s.endTime} ({s.slotDurationMinutes} min slots)
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <small className={styles.complianceNote} style={{ marginTop: "1rem" }}>
+                    Note: Appointment availability is synchronized directly with the hospital&apos;s
+                    clinical scheduling system.
                   </small>
                 </div>
-              </div>
+              ) : (
+                <div className={styles.scheduleEmptyState}>
+                  <div className={styles.calendarIcon} aria-hidden="true">
+                    📅
+                  </div>
+                  <div>
+                    <p className={styles.emptyNotice}>
+                      No fixed routine hours posted. Please check live availability dates in the booking
+                      system or contact the hospital.
+                    </p>
+                    <small className={styles.complianceNote}>
+                      Note: Appointment availability is synchronized directly with the hospital&apos;s
+                      clinical scheduling system.
+                    </small>
+                  </div>
+                </div>
+              )}
 
               <div style={{ marginTop: "1.5rem" }}>
                 <Button href={`/appointments?doctor=${doc.slug}`} variant="secondary" size="md">
-                  Check General Availability →
+                  Check Live Availability & Book →
                 </Button>
               </div>
             </section>

@@ -100,6 +100,11 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/staff/login" className={styles.footerLink}>
+                  Staff Portal
+                </Link>
+              </li>
             </ul>
           </div>
 

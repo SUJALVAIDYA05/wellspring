@@ -66,6 +66,16 @@
   gap: 2rem;
 }
 
+.emptyState {
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: var(--color-canvas-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
+
 @media (max-width: 960px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);

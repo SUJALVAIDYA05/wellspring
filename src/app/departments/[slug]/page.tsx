@@ -5,9 +5,21 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { Button } from "@/components/common/Button";
 import { HOSPITAL_CONTENT } from "@/content/hospital-content";
+import { prisma } from "@/lib/db";
 import styles from "./dept-detail.module.css";
 
-export function generateStaticParams() {
+export const instant = false;
+
+export async function generateStaticParams() {
+  try {
+    const depts = await prisma.department.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+    });
+    if (depts.length > 0) {
+      return depts.map((dept) => ({ slug: dept.slug }));
+    }
+  } catch {}
   return HOSPITAL_CONTENT.departments.map((dept) => ({
     slug: dept.slug,
   }));
@@ -19,16 +31,28 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const dept = HOSPITAL_CONTENT.departments.find((d) => d.slug === slug);
-  if (!dept) {
+  try {
+    const dept = await prisma.department.findFirst({
+      where: { slug, isActive: true },
+    });
+    if (dept) {
+      return {
+        title: dept.name,
+        description: dept.summary,
+      };
+    }
+  } catch {}
+
+  const fallback = HOSPITAL_CONTENT.departments.find((d) => d.slug === slug);
+  if (!fallback) {
     return {
       title: "Department Not Found",
       description: "This department may be unavailable or the link may be incorrect.",
     };
   }
   return {
-    title: dept.name,
-    description: dept.summary,
+    title: fallback.name,
+    description: fallback.summary,
   };
 }
 
@@ -38,7 +62,70 @@ export default async function DepartmentDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const dept = HOSPITAL_CONTENT.departments.find((d) => d.slug === slug);
+
+  let dept: {
+    id: string;
+    slug: string;
+    name: string;
+    summary: string;
+    description: string;
+    services: string[];
+    doctors: {
+      id: string;
+      slug: string;
+      fullName: string;
+      specialty: string;
+    }[];
+  } | null = null;
+
+  try {
+    const dbDept = await prisma.department.findFirst({
+      where: { slug, isActive: true },
+      include: {
+        services: { where: { isActive: true }, orderBy: { name: "asc" } },
+        doctors: { where: { isActive: true }, orderBy: { fullName: "asc" } },
+      },
+    });
+
+    if (dbDept) {
+      dept = {
+        id: dbDept.id,
+        slug: dbDept.slug,
+        name: dbDept.name,
+        summary: dbDept.summary,
+        description: dbDept.description,
+        services: dbDept.services.map((s) => s.name),
+        doctors: dbDept.doctors.map((d) => ({
+          id: d.id,
+          slug: d.slug,
+          fullName: d.fullName,
+          specialty: d.specialty,
+        })),
+      };
+    }
+  } catch {
+    const fallback = HOSPITAL_CONTENT.departments.find((d) => d.slug === slug);
+    if (fallback) {
+      const fallbackDocs = HOSPITAL_CONTENT.doctors
+        .filter((d) => d.departmentSlug === fallback.slug)
+        .map((d) => ({
+          id: d.id,
+          slug: d.slug,
+          fullName: d.fullName,
+          specialty: d.specialty,
+        }));
+
+      dept = {
+        id: fallback.id,
+        slug: fallback.slug,
+        name: fallback.name,
+        summary: fallback.summary,
+        description: fallback.description,
+        services: fallback.services,
+        doctors: fallbackDocs,
+      };
+    }
+  }
 
   if (!dept) {
     return (
@@ -60,11 +147,6 @@ export default async function DepartmentDetailPage({
       </PageContainer>
     );
   }
-
-  // Find linked doctors for this department
-  const relatedDoctors = HOSPITAL_CONTENT.doctors.filter(
-    (doc) => doc.departmentSlug === dept.slug
-  );
 
   return (
     <PageContainer>
@@ -91,29 +173,42 @@ export default async function DepartmentDetailPage({
 
             <section className={styles.sectionBlock}>
               <h2 className={styles.subHeading}>Services</h2>
-              <ul className={styles.serviceList}>
-                {dept.services.map((service, idx) => (
-                  <li key={idx} className={styles.serviceItem}>
-                    <span className={styles.check} aria-hidden="true">✓</span>
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
+              {dept.services.length > 0 ? (
+                <ul className={styles.serviceList}>
+                  {dept.services.map((service, idx) => (
+                    <li key={idx} className={styles.serviceItem}>
+                      <span className={styles.check} aria-hidden="true">
+                        ✓
+                      </span>
+                      <span>{service}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={styles.mutedText}>
+                  Services for this department are being updated.
+                </p>
+              )}
             </section>
 
             <section className={styles.sectionBlock}>
               <h2 className={styles.subHeading}>Doctors in This Department</h2>
-              {relatedDoctors.length > 0 ? (
+              {dept.doctors.length > 0 ? (
                 <div className={styles.doctorList}>
-                  {relatedDoctors.map((doc) => (
+                  {dept.doctors.map((doc) => (
                     <div key={doc.slug} className={styles.doctorCard}>
                       <div>
                         <h3 className={styles.docName}>{doc.fullName}</h3>
                         <p className={styles.docTitle}>{doc.specialty}</p>
                       </div>
-                      <Button href={`/doctors/${doc.slug}`} variant="secondary" size="sm">
-                        View Profile →
-                      </Button>
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <Button href={`/appointments?doctor=${doc.slug}`} variant="primary" size="sm">
+                          Book
+                        </Button>
+                        <Button href={`/doctors/${doc.slug}`} variant="secondary" size="sm">
+                          Profile →
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>

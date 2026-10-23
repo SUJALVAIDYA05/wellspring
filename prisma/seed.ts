@@ -92,7 +92,29 @@ async function main() {
     },
   });
 
-  console.log("✓ Created 3 fictional departments");
+  const deptSpecialist = await prisma.department.create({
+    data: {
+      slug: "specialist-care",
+      name: "Specialist Care & Diagnostics",
+      summary: "Advanced outpatient consultations, diagnostic assessments, and specialist clinics.",
+      description:
+        "Providing cardiology, endocrinology, and targeted subspecialty diagnostics with integrated treatment planning.",
+      isActive: true,
+    },
+  });
+
+  const deptWellness = await prisma.department.create({
+    data: {
+      slug: "community-wellness",
+      name: "Community & Preventative Wellness",
+      summary: "Health screenings, lifestyle guidance, and preventative primary care.",
+      description:
+        "Dedicated to holistic outpatient wellness, annual executive physicals, routine immunizations, and community health.",
+      isActive: true,
+    },
+  });
+
+  console.log("✓ Created 5 fictional departments");
 
   // 3. Services
   await prisma.service.createMany({
@@ -177,7 +199,62 @@ async function main() {
     },
   });
 
-  console.log("✓ Created 3 fictional doctors");
+  const docJenkins = await prisma.doctor.create({
+    data: {
+      slug: "lead-physician-general-medicine",
+      fullName: "Dr. Sarah Jenkins, MD",
+      specialty: "Lead Physician — General Medicine",
+      departmentId: deptGeneral.id,
+      qualifications: ["MD, FACP", "Board Certified Internal Medicine"],
+      biography:
+        "Dr. Sarah Jenkins brings over fifteen years of comprehensive primary care experience, specializing in preventative medicine, complex chronic illness management, and patient-centered diagnostic evaluations.",
+      photoUrl: "/images/hero-doctor-cutout.png",
+      isActive: true,
+    },
+  });
+
+  const docMarcus = await prisma.doctor.create({
+    data: {
+      slug: "lead-cardiologist-specialist",
+      fullName: "Dr. Marcus Vance, MD",
+      specialty: "Cardiologist & Clinical Specialist",
+      departmentId: deptCardio.id,
+      qualifications: ["MD, FACC", "Fellow of the American College of Cardiology"],
+      biography:
+        "Dr. Marcus Vance leads cardiovascular diagnostic testing, arrhythmia management, and non-invasive cardiac interventions with clinical precision.",
+      photoUrl: "/images/doctor-male-portrait.jpg",
+      isActive: true,
+    },
+  });
+
+  const docElena = await prisma.doctor.create({
+    data: {
+      slug: "lead-family-practitioner",
+      fullName: "Dr. Elena Rostova, MD",
+      specialty: "Family Medicine & Preventative Care",
+      departmentId: deptWellness.id,
+      qualifications: ["MD, FAAFP", "Board Certified Family Medicine"],
+      biography:
+        "Dr. Elena Rostova partners with patients across all stages of life, focusing on lifestyle wellness, proactive early disease detection, and whole-family outpatient care.",
+      photoUrl: "/images/doctor-consultation.jpg",
+      isActive: true,
+    },
+  });
+
+  const docInactive = await prisma.doctor.create({
+    data: {
+      slug: "dr-inactive-physician",
+      fullName: "Dr. Retired Physician [INACTIVE]",
+      specialty: "Emeritus Consultation",
+      departmentId: deptGeneral.id,
+      qualifications: ["MD (Retired)"],
+      biography: "This profile is inactive for booking tests.",
+      photoUrl: "/images/hero-doctor.jpg",
+      isActive: false,
+    },
+  });
+
+  console.log("✓ Created 6 fictional doctors (including 1 inactive)");
 
   // 5. Schedules (0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat)
   // Dr. Carter: Mon-Fri 09:00 - 17:00, 30 min slots
@@ -210,8 +287,45 @@ async function main() {
     isActive: true,
   }));
 
+  // Dr. Jenkins: Mon-Fri 09:00 - 17:00, 30 min slots
+  const jenkinsSchedules = [1, 2, 3, 4, 5].map((dayOfWeek) => ({
+    doctorId: docJenkins.id,
+    dayOfWeek,
+    startTime: "09:00",
+    endTime: "17:00",
+    slotDurationMinutes: 30,
+    isActive: true,
+  }));
+
+  // Dr. Marcus: Mon, Wed, Fri 10:00 - 16:00, 30 min slots
+  const marcusSchedules = [1, 3, 5].map((dayOfWeek) => ({
+    doctorId: docMarcus.id,
+    dayOfWeek,
+    startTime: "10:00",
+    endTime: "16:00",
+    slotDurationMinutes: 30,
+    isActive: true,
+  }));
+
+  // Dr. Elena: Tue, Thu, Fri 09:00 - 15:00, 30 min slots
+  const elenaSchedules = [2, 4, 5].map((dayOfWeek) => ({
+    doctorId: docElena.id,
+    dayOfWeek,
+    startTime: "09:00",
+    endTime: "15:00",
+    slotDurationMinutes: 30,
+    isActive: true,
+  }));
+
   await prisma.doctorSchedule.createMany({
-    data: [...carterSchedules, ...vanceSchedules, ...chenSchedules],
+    data: [
+      ...carterSchedules,
+      ...vanceSchedules,
+      ...chenSchedules,
+      ...jenkinsSchedules,
+      ...marcusSchedules,
+      ...elenaSchedules,
+    ],
   });
 
   console.log("✓ Created doctor recurring schedules");

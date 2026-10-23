@@ -102,7 +102,7 @@ export function formatErrorResponse(error: unknown) {
     );
   }
 
-  // Check for PostgreSQL exclusion constraint violation (code 23P01)
+  // Check for PostgreSQL exclusion constraint violation (code 23P01) or Prisma P2034 serialization failure
   if (
     error &&
     typeof error === "object" &&
@@ -111,8 +111,11 @@ export function formatErrorResponse(error: unknown) {
     const err = error as { code?: string; message?: string };
     if (
       err.code === "23P01" ||
+      err.code === "P2034" ||
       (typeof err.message === "string" &&
-        err.message.includes("no_overlapping_blocking_appointments"))
+        (err.message.includes("no_overlapping_blocking_appointments") ||
+          err.message.includes("could not serialize access") ||
+          err.message.includes("write conflict")))
     ) {
       return NextResponse.json(
         {
