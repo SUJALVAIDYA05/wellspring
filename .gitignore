@@ -50,3 +50,9 @@ content.md
 features.md
 frontend.md
 
+# local embedded db data
+data/
+*.log
+
+
+/src/generated/prisma

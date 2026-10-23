@@ -149,7 +149,47 @@ npm run lint
 - [x] **Emergency Page (`/emergency`)**: Clear separation from routine booking, high-visibility emergency phone, arrival instructions, and triage warnings.
 - [x] **Build & Quality Assurance**: Zero TypeScript errors, zero ESLint warnings, all 17 static/SSG routes prerendering cleanly.
 
-### Next Steps (Subsequent Phases)
-1. **Database & Migrations**: Initialize Prisma schema for PostgreSQL with models (`Doctor`, `Department`, `Service`, `DoctorSchedule`, `DoctorScheduleException`, `Appointment`, `StaffUser`, `AuditLog`) and concurrency constraints.
-2. **API Routes**: Implement Route Handlers under `src/app/api/` with Zod schema validation.
-3. **Staff Authentication & Portal**: Implement secure session management and role-based access for `ADMIN` and `EMPLOYEE` roles.
+### Completed in Phase 3 (Backend Implementation, Concurrency Safety & API Routes)
+- [x] **Prisma Database Schema & Migrations**: Complete PostgreSQL schema committed in [`prisma/schema.prisma`](./prisma/schema.prisma) with UUID primary keys, typed enums (`StaffRole`, `AppointmentStatus`), foreign keys, and indexes for `Doctor`, `Department`, `Service`, `DoctorSchedule`, `DoctorScheduleException`, `Appointment`, `StaffUser`, and `AuditLog`.
+- [x] **Critical Concurrency Protection**: PostgreSQL `btree_gist` exclusion constraint (`no_overlapping_blocking_appointments`) combined with transaction-level locking and hold expiry to physically disallow two overlapping confirmed or pending bookings for the same physician. Adjacent slots `[startsAt, endsAt)` are permitted.
+- [x] **Connection & Environment Management**: Connection-pooled singleton Prisma client with `@prisma/adapter-pg` in [`src/lib/db.ts`](./src/lib/db.ts), runtime environment validation in [`src/lib/env.ts`](./src/lib/env.ts), and time zone translation engine in [`src/lib/timezone.ts`](./src/lib/timezone.ts).
+- [x] **Public API Route Handlers**:
+  - `GET /api/departments` & `GET /api/departments/[slug]`
+  - `GET /api/services`
+  - `GET /api/doctors` & `GET /api/doctors/[slug]`
+  - `GET /api/doctors/[slug]/availability?from=...&to=...` (server-calculated slots accounting for recurring schedules, exceptions, and blocking appointments; supports doctor slug or ID)
+  - `POST /api/appointments` (atomic booking request, returns `{ referenceCode, status }` or `409 DOCTOR_SLOT_UNAVAILABLE`)
+  - `POST /api/contact`
+- [x] **Staff Authentication & Role Authorization**:
+  - `POST /api/staff/auth/login` (bcrypt hash verification, JWT tokens signed with `jose`, HttpOnly secure cookie and Bearer auth)
+  - `POST /api/staff/auth/logout` & `GET /api/staff/auth/me`
+  - Strict server-side role enforcement preventing `EMPLOYEE` users from accessing `ADMIN` actions (403 Forbidden).
+- [x] **Staff Management & Audit Logging**:
+  - `GET /api/staff/appointments` (paginated, filterable by date, doctor, status, and reference code)
+  - `GET /api/staff/appointments/[id]`, `PATCH /api/staff/appointments/[id]`, `POST /api/staff/appointments/[id]/cancel`
+  - Admin-only CRUD routes for staff users, doctors, departments, and services.
+  - Audit logging with automated patient PII and credential redaction in [`src/lib/audit.ts`](./src/lib/audit.ts).
+- [x] **Fictional Development Seed**:
+  - Executable seed script in [`prisma/seed.ts`](./prisma/seed.ts) (`npm run db:seed`) creating clearly fictional test data.
+- [x] **Automated Test Suite**:
+  - 44 unit and integration tests passing cleanly across 5 test suites (`npm test`).
+  - Integration tests verify concurrent parallel race conditions, adjacent slot handling, cancelled slot releasing, inactive doctor rejections, role boundaries, and full API endpoint flows.
+- [x] **Production Build Validation**: Next.js 16 Turbo production build succeeds with zero errors across all static pages and dynamic route handlers.
+
+---
+
+## 7. Database & Testing Commands
+
+```bash
+# Start the local embedded PostgreSQL daemon
+npm run db:start
+
+# Seed the database with fictional development records
+npm run db:seed
+
+# Run the complete test suite (Unit & Integration tests)
+npm test
+
+# Build for production
+npm run build
+```

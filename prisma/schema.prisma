@@ -1,0 +1,167 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum StaffRole {
+  ADMIN
+  EMPLOYEE
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+model Department {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  name        String
+  summary     String
+  description String
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  doctors     Doctor[]
+  services    Service[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model Doctor {
+  id             String    @id @default(uuid())
+  slug           String    @unique
+  fullName       String
+  specialty      String
+  departmentId   String
+  qualifications String[]
+  biography      String?
+  photoUrl       String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  department         Department                @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  schedules          DoctorSchedule[]
+  scheduleExceptions DoctorScheduleException[]
+  appointments       Appointment[]
+
+  @@index([slug])
+  @@index([departmentId])
+  @@index([isActive])
+}
+
+model Service {
+  id           String    @id @default(uuid())
+  slug         String    @unique
+  name         String
+  summary      String
+  description  String
+  departmentId String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  @@index([slug])
+  @@index([departmentId])
+  @@index([isActive])
+}
+
+model DoctorSchedule {
+  id                  String   @id @default(uuid())
+  doctorId            String
+  dayOfWeek           Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime           String   // "HH:mm" e.g. "09:00"
+  endTime             String   // "HH:mm" e.g. "17:00"
+  slotDurationMinutes Int      @default(30)
+  isActive            Boolean  @default(true)
+
+  doctor              Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, dayOfWeek])
+  @@index([isActive])
+}
+
+model DoctorScheduleException {
+  id        String   @id @default(uuid())
+  doctorId  String
+  startsAt  DateTime @db.Timestamptz(3)
+  endsAt    DateTime @db.Timestamptz(3)
+  reason    String?
+  createdAt DateTime @default(now())
+
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, startsAt, endsAt])
+}
+
+model Appointment {
+  id                 String            @id @default(uuid())
+  referenceCode      String            @unique
+  patientName        String
+  patientPhone       String
+  patientEmail       String?
+  doctorId           String
+  startsAt           DateTime          @db.Timestamptz(3)
+  endsAt             DateTime          @db.Timestamptz(3)
+  status             AppointmentStatus @default(PENDING)
+  reasonForVisit     String?
+  cancellationReason String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  createdByUserId    String?
+  updatedByUserId    String?
+
+  doctor        Doctor     @relation(fields: [doctorId], references: [id], onDelete: Restrict)
+  createdByUser StaffUser? @relation("CreatedAppointments", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  updatedByUser StaffUser? @relation("UpdatedAppointments", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([doctorId, startsAt, endsAt])
+  @@index([status])
+  @@index([referenceCode])
+}
+
+model StaffUser {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         StaffRole @default(EMPLOYEE)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  createdAppointments Appointment[] @relation("CreatedAppointments")
+  updatedAppointments Appointment[] @relation("UpdatedAppointments")
+  auditLogs           AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUserId String
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  actor       StaffUser @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+
+  @@index([entityType, entityId])
+  @@index([actorUserId])
+  @@index([createdAt])
+}
